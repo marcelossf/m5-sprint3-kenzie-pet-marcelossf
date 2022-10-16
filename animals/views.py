@@ -1,10 +1,7 @@
-from pickle import EMPTY_DICT
-from django.shortcuts import render
 from .validator import AnimalValidator
 
 from rest_framework.views import APIView, status
 from rest_framework.response import Response
-from django.forms.models import model_to_dict
 
 from .models import Animal
 from .serializers import AnimalSerializer
@@ -24,7 +21,6 @@ class AnimalCreateView(APIView):
     def post(self, request):
             validator = AnimalValidator(**request.data)
             valid_data = validator.is_valid()
-
             if not valid_data:
                 return Response(validator.errors, status.HTTP_400_BAD_REQUEST)
 
@@ -35,15 +31,16 @@ class AnimalCreateView(APIView):
 
             group_serializer = GroupSerializer(data=group_data)
             
-
             serializer = AnimalSerializer(data=animal_data)
 
             if serializer.is_valid() and group_serializer.is_valid():
+                
                 g1 = Group.objects.get_or_create(**group_data)
-                a1 = Animal.objects.create(**serializer.data, group=g1[0])
+
+                a1 = Animal.objects.create(**animal_data, group=g1[0])
+                
                 for trait in trait_data:
                     a1.traits.add(Trait.objects.get_or_create(**trait)[0])
-                
                 return Response(AnimalSerializer(a1).data, status.HTTP_201_CREATED)
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
@@ -59,7 +56,6 @@ class AnimalUpdateView(APIView):
             animal = Animal.objects.get(id=animal_id)
             serializer = AnimalSerializer(animal, request.data, partial=True)
             valid_data = serializer.is_valid()
-
             if valid_data:
                 serializer.save()
                 

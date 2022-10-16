@@ -23,5 +23,5 @@ class Animal(models.Model):
     )
 
     def convert_dog_age_to_human_years(self):
-        human_age = 16 * math.log(self.age) + 31
+        human_age = int(16 * math.log(self.age) + 31)
         return human_age 

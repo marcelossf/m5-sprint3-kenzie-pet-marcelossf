@@ -55,7 +55,6 @@ class AnimalValidator:
 
     def validate_required_keys(self):
         for valid_key in self.valid_keys:
-            print('key:',valid_key)
             if valid_key not in self.data.keys():
                 self.errors[valid_key] = "[This field is required.]"
 
