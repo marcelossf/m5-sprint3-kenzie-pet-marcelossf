@@ -22,7 +22,7 @@ class AnimalValidator:
         "weight",
         "group",
         "traits",
-
+        "sex"
     ]
 
     valid_inputs = {
